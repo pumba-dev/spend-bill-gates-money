@@ -7,14 +7,15 @@
     <h1 class="item__title">{{ item.title }}</h1>
     <h2 class="item__price">{{ "$" + item.price }}</h2>
     <div class="item__actions">
-      <button class="button button--red">Sell</button>
+      <GeneralButton class="button--red">Sell</GeneralButton>
       <input class="actions__amount" type="number" pattern="\d*" />
-      <button class="button button--green">Buy</button>
+      <GeneralButton class="button--green">Buy</GeneralButton>
     </div>
   </div>
 </template>
 
 <script setup>
+import GeneralButton from "@/components/GeneralButton.vue";
 import { defineProps } from "vue";
 defineProps({
   item: {
@@ -28,7 +29,7 @@ defineProps({
 @import "@/sass/variables.scss";
 
 .market-item {
-  background-color: #fff;
+  background-color: $primary-white;
   padding: 20px 15px;
 
   display: flex;
