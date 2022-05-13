@@ -20,8 +20,9 @@
   font-size: $font-base;
   text-align: center;
 
-  &:disabled {
+  &.button--disabled {
     background: $primary-baby-blue !important;
+    color: $primary-black;
   }
 
   &.button--red {

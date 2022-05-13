@@ -7,22 +7,39 @@
     <h1 class="item__title">{{ item.title }}</h1>
     <h2 class="item__price">{{ "$" + item.price }}</h2>
     <div class="item__actions">
-      <GeneralButton class="button--red">Sell</GeneralButton>
-      <input class="actions__amount" type="number" pattern="\d*" />
-      <GeneralButton class="button--green">Buy</GeneralButton>
+      <GeneralButton
+        :class="[
+          { 'button--red': itemAmount > 0 },
+          { 'button--disabled': itemAmount == 0 },
+        ]"
+        @click="itemAmount--"
+      >
+        Sell</GeneralButton
+      >
+      <input
+        class="item__amount"
+        type="number"
+        pattern="\d*"
+        v-model="itemAmount"
+      />
+      <GeneralButton class="button--green" @click="itemAmount++"
+        >Buy</GeneralButton
+      >
     </div>
   </div>
 </template>
 
 <script setup>
 import GeneralButton from "@/components/GeneralButton.vue";
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
 defineProps({
   item: {
     type: Object,
     required: true,
   },
 });
+
+const itemAmount = ref(0);
 </script>
 
 <style lang="scss" scoped>
@@ -59,6 +76,15 @@ defineProps({
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 10px 10px;
     margin-top: 25px;
+  }
+
+  .item__amount {
+    font-size: 16px;
+    text-align: center;
+    padding: 9px 12px;
+    border-radius: 3px;
+    border: 1px solid $primary-gray;
+    width: 100%;
   }
 }
 </style>
