@@ -21,7 +21,7 @@ export default createStore({
       state.totalOfMoney -= value;
     },
     pushItemToCart(state, value) {
-      state.reciept.push(value);
+      state.cart.push(value);
     },
     removeItemFromCart(state, id) {
       state.cart.splice(id, 1);

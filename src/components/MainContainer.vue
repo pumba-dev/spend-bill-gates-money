@@ -10,7 +10,7 @@
     </section>
 
     <section class="main-container__money-bar">
-      {{ "$99.99" }}
+      {{ totalOfMoney.toLocaleString("en") }}
     </section>
 
     <section class="main-container__market-list">
@@ -26,9 +26,13 @@
 <script setup>
 import MarketItem from "@/components/MarketItem.vue";
 import itensList from "@/assets/mocks/itens-to-sell.js";
-import { onMounted, ref } from "@vue/runtime-core";
+import { computed, onMounted, ref } from "vue";
+import { useStore } from "vuex";
 
+const store = useStore();
 const sortedList = ref([]);
+const totalOfMoney = computed(() => store.getters["getTotalOfMoney"]);
+
 onMounted(() => {
   sortedList.value = itensList.sort((a, b) => {
     return a.price - b.price;

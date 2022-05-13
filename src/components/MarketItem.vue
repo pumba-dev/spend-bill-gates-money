@@ -5,14 +5,17 @@
       :src="require(`@/assets/images/${item.src}.jpg`)"
     />
     <h1 class="item__title">{{ item.title }}</h1>
-    <h2 class="item__price">{{ "$" + item.price }}</h2>
+    <h2 class="item__price">
+      {{ "$" + item.price.toLocaleString("en") }}
+    </h2>
     <div class="item__actions">
       <GeneralButton
         :class="[
           { 'button--red': itemAmount > 0 },
           { 'button--disabled': itemAmount == 0 },
         ]"
-        @click="itemAmount--"
+        @click="sellOneItem"
+        :disabled="itemAmount == 0"
       >
         Sell</GeneralButton
       >
@@ -21,8 +24,9 @@
         type="number"
         pattern="\d*"
         v-model="itemAmount"
+        @input="changeItemAmount"
       />
-      <GeneralButton class="button--green" @click="itemAmount++"
+      <GeneralButton class="button--green" @click="buyOneItem"
         >Buy</GeneralButton
       >
     </div>
@@ -32,14 +36,34 @@
 <script setup>
 import GeneralButton from "@/components/GeneralButton.vue";
 import { defineProps, ref } from "vue";
-defineProps({
+import { useStore } from "vuex";
+
+const props = defineProps({
   item: {
     type: Object,
     required: true,
   },
 });
 
+const store = useStore();
 const itemAmount = ref(0);
+
+function buyOneItem() {
+  itemAmount.value += 1;
+  store.dispatch("addItemToCart", props.item);
+}
+
+function sellOneItem() {
+  itemAmount.value -= 1;
+  store.dispatch("removeItemToCart", props.item);
+}
+
+function changeItemAmount() {
+  store.dispatch("changeItemAmountCart", {
+    item: props.item,
+    quantity: itemAmount.value,
+  });
+}
 </script>
 
 <style lang="scss" scoped>
@@ -69,6 +93,7 @@ const itemAmount = ref(0);
   .item__price {
     font-size: $font-lg;
     color: $primary-green;
+    margin-top: 0.35rem;
   }
 
   .item__actions {
