@@ -2,7 +2,7 @@
   <main class="main-container">
     <section class="main-container__header">
       <img
-        src="@/assets/billgates.jpg"
+        src="@/assets/images/billgates.jpg"
         alt="Image of Bill Gates"
         class="header__logo"
       />
@@ -12,11 +12,28 @@
     <section class="main-container__money-bar">
       {{ "$99.99" }}
     </section>
+
+    <section class="main-container__market-list">
+      <MarketItem
+        v-for="item in sortedList"
+        :key="item.id"
+        :item="item"
+      ></MarketItem>
+    </section>
   </main>
 </template>
 
-<script>
-export default {};
+<script setup>
+import MarketItem from "@/components/MarketItem.vue";
+import itensList from "@/assets/mocks/itens-to-sell.js";
+import { onMounted, ref } from "@vue/runtime-core";
+
+const sortedList = ref([]);
+onMounted(() => {
+  sortedList.value = itensList.sort((a, b) => {
+    return a.price - b.price;
+  });
+});
 </script>
 
 <style lang="scss" scoped>
@@ -66,6 +83,12 @@ export default {};
     font-size: $font-4xl;
     font-weight: 700;
     text-align: center;
+  }
+
+  .main-container__market-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-gap: 10px 10px;
   }
 }
 </style>
