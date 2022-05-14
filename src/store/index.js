@@ -17,7 +17,16 @@ export default createStore({
       return money;
     },
     getCart(state) {
-      return state.cart;
+      return state.cart.sort((a, b) => {
+        return a.price - b.price;
+      });
+    },
+    getTotalCostCart(state) {
+      let total = 0;
+      state.cart.forEach((item) => {
+        total += item.price * item.amount;
+      });
+      return total;
     },
   },
   mutations: {
