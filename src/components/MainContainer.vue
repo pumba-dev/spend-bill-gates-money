@@ -1,38 +1,15 @@
 <template>
   <main class="main-container">
-    <section class="main-container__header">
-      <img
-        src="@/assets/images/billgates.jpg"
-        alt="Image of Bill Gates"
-        class="header__logo"
-      />
-      <h1 class="header__text">Spend Bill Gates' Money</h1>
-    </section>
+    <MainContainerHeader></MainContainerHeader>
 
     <MoneyBar :totalOfMoney="totalOfMoney"></MoneyBar>
 
-    <section class="main-container__market-list">
-      <MarketItem
-        v-for="item in sortedList"
-        :key="item.id"
-        :item="item"
-      ></MarketItem>
-    </section>
+    <MarketList :itemList="sortedList"></MarketList>
 
-    <section class="receipt" v-if="currentCart.length">
-      <h1 class="receipt__header">Your Receipt</h1>
-      <ReceiptItem
-        v-for="item in currentCart"
-        :key="item.id"
-        :item="item"
-      ></ReceiptItem>
-      <div class="receipt__total">
-        <span class="total__title">TOTAL</span>
-        <span class="total__value">{{
-          "$" + totalCostCart.toLocaleString("en")
-        }}</span>
-      </div>
-    </section>
+    <ReceiptWrapper
+      :totalCostCart="totalCostCart"
+      :currentCart="currentCart"
+    ></ReceiptWrapper>
   </main>
 </template>
 
@@ -40,10 +17,11 @@
 import { useStore } from "vuex";
 import { computed, onMounted, ref } from "vue";
 
-import ReceiptItem from "./ReceiptItem.vue";
-import MarketItem from "@/components/MarketItem.vue";
 import itensList from "@/assets/mocks/itens-to-sell.js";
 import MoneyBar from "./MoneyBar.vue";
+import MarketList from "./MarketList.vue";
+import ReceiptWrapper from "./ReceiptWrapper.vue";
+import MainContainerHeader from "./MainContainerHeader.vue";
 
 const store = useStore();
 const sortedList = ref([]);
@@ -59,83 +37,8 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@import "@/sass/variables.scss";
-@import "@/sass/media-querys.scss";
-
 .main-container {
   max-width: 1000px;
   margin: auto;
-
-  .main-container__header {
-    width: 100%;
-    background: $primary-white;
-    padding: 30px 20px;
-    margin-bottom: 10px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    .header__logo {
-      user-select: none;
-      width: 125px;
-      height: 125px;
-      margin: 10px auto 25px;
-      border-radius: 125px;
-    }
-
-    .header__text {
-      font-size: 32px;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.3em;
-    }
-  }
-
-  .main-container__market-list {
-    display: grid;
-    grid-gap: 10px 10px;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-
-    @include media-query(sm) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    @include media-query(md) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .receipt {
-    max-width: 100%;
-    font-size: 18px;
-    padding: 15px 15px 30px;
-    margin-top: 10px;
-    background-color: #fff;
-    text-align: center;
-
-    .receipt__header {
-      font-size: 28px;
-      padding: 15px 15px 25px;
-      font-weight: 700;
-    }
-
-    .receipt__total {
-      font-weight: 700;
-      max-width: 300px;
-      border-top: 1px solid #333;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 10px;
-      padding-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      font-size: $font-md;
-
-      .total__value {
-        color: $primary-green;
-        text-align: right;
-      }
-    }
-  }
 }
 </style>
