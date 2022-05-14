@@ -26,7 +26,13 @@
         v-model="itemAmount"
         @input="changeItemAmount"
       />
-      <GeneralButton class="button--green" @click="buyOneItem"
+      <GeneralButton
+        :class="[
+          { 'button--green': item.price <= totalOfMoney },
+          { 'button--disabled': item.price > totalOfMoney },
+        ]"
+        @click="buyOneItem"
+        :disabled="item.price > totalOfMoney"
         >Buy</GeneralButton
       >
     </div>
@@ -35,7 +41,7 @@
 
 <script setup>
 import GeneralButton from "@/components/GeneralButton.vue";
-import { defineProps, ref } from "vue";
+import { computed, defineProps, ref } from "vue";
 import { useStore } from "vuex";
 
 const props = defineProps({
@@ -47,22 +53,31 @@ const props = defineProps({
 
 const store = useStore();
 const itemAmount = ref(0);
+const totalOfMoney = computed(() => store.getters["getMoney"]);
 
 function buyOneItem() {
-  itemAmount.value += 1;
-  store.dispatch("addItemToCart", props.item);
+  store.dispatch("addOneItem", props.item).then(() => {
+    itemAmount.value += 1;
+  });
 }
 
 function sellOneItem() {
   itemAmount.value -= 1;
-  store.dispatch("removeItemToCart", props.item);
+  store.dispatch("removeOneItem", props.item);
 }
 
 function changeItemAmount() {
-  store.dispatch("changeItemAmountCart", {
-    item: props.item,
-    quantity: itemAmount.value,
-  });
+  store
+    .dispatch("changeAmountOfItem", {
+      item: props.item,
+      quantity: itemAmount.value,
+    })
+    .then((response) => {
+      if (response != "sucess") {
+        console.log("newAmount::: " + response);
+        itemAmount.value = response;
+      }
+    });
 }
 </script>
 

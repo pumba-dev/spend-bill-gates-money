@@ -261,7 +261,7 @@ export default [
     id: 44,
     title: "Cruise Ship",
     price: 930000000,
-    src: "skyscraper",
+    src: "cruise-ship",
   },
   {
     id: 45,

@@ -1,74 +1,124 @@
 import { createStore } from "vuex";
 
+const TotalGatesMoney = 100000000000;
+
 export default createStore({
   state: {
-    totalOfMoney: 100000000000,
     cart: [],
+    money: TotalGatesMoney,
   },
   getters: {
-    getTotalOfMoney(state) {
-      return state.totalOfMoney;
+    getMoney(state) {
+      let money = TotalGatesMoney;
+
+      state.cart.forEach((item) => {
+        money -= item.price * item.amount;
+      });
+      return money;
     },
     getCart(state) {
       return state.cart;
     },
   },
   mutations: {
-    addTotalOfMoney(state, value) {
-      state.totalOfMoney += value;
-    },
-    subTotalOfMoney(state, value) {
-      state.totalOfMoney -= value;
-    },
     pushItemToCart(state, value) {
       state.cart.push(value);
     },
     removeItemFromCart(state, id) {
       state.cart.splice(id, 1);
     },
+    increaseItemQuantity(state, value) {
+      state.cart[value.id].amount += value.quantity;
+    },
+    decrementItemQuantity(state, value) {
+      state.cart[value.id].amount -= value.quantity;
+    },
+    changeItemAmount(state, value) {
+      state.cart[value.id].amount = value.quantity;
+    },
   },
   actions: {
-    addItemToCart({ commit, state }, item) {
-      let hasItem = false;
-      state.cart.forEach((element) => {
-        if (element.id === item.id) {
-          element.quantity += 1;
-          hasItem = true;
-        }
-      });
-      if (!hasItem) {
+    addOneItem({ commit, getters }, payload) {
+      if (!hasItemOnCart(getters.getCart, payload.id)) {
         commit("pushItemToCart", {
-          ...item,
+          ...payload,
+          amount: 1,
+        });
+      } else {
+        const ItemIdOnCart = getItemIdOnCart(getters.getCart, payload.id);
+        commit("increaseItemQuantity", {
+          id: ItemIdOnCart,
           quantity: 1,
         });
       }
-      commit("subTotalOfMoney", item.price);
     },
-    changeItemAmountCart({ commit, state }, data) {
-      let hasItem = false;
-      state.cart.forEach((element) => {
-        if (element.id === data.item.id) {
-          commit("addTotalOfMoney", data.item.price * element.quantity);
-          element.quantity = data.quantity;
-          hasItem = true;
-        }
+    removeOneItem({ commit, getters }, payload) {
+      const ItemIdOnCart = getItemIdOnCart(getters.getCart, payload.id);
+      commit("decrementItemQuantity", {
+        id: ItemIdOnCart,
+        quantity: 1,
       });
-      if (!hasItem) {
+    },
+    changeAmountOfItem({ commit, getters }, payload) {
+      const currentMoney = getters.getMoney;
+      const hasItem = hasItemOnCart(getters.getCart, payload.item.id);
+      const itemOnCart = getItemFromCart(getters.getCart, payload.item.id);
+      const ItemIdOnCart = getItemIdOnCart(getters.getCart, payload.item.id);
+      const canPay = currentMoney >= payload.item.price * payload.quantity;
+      let possibleAmount = 0;
+
+      if (canPay) {
+        possibleAmount = payload.quantity;
+      } else {
+        if (hasItem) {
+          possibleAmount = Math.floor(
+            (currentMoney + itemOnCart.price * itemOnCart.amount) /
+              payload.item.price
+          );
+        } else {
+          possibleAmount = Math.floor(currentMoney / payload.item.price);
+        }
+        if (possibleAmount === 0) {
+          return possibleAmount;
+        }
+      }
+
+      if (hasItem) {
+        commit("changeItemAmount", {
+          id: ItemIdOnCart,
+          quantity: possibleAmount,
+        });
+      } else {
         commit("pushItemToCart", {
-          ...data.item,
-          quantity: data.quantity,
+          ...payload.item,
+          amount: possibleAmount,
         });
       }
 
-      commit("subTotalOfMoney", data.item.price * data.quantity);
-    },
-    removeItemToCart({ commit, state }, item) {
-      state.cart.forEach((element) => {
-        if (element.id === item.id) {
-          element.quantity -= 1;
-          commit("addTotalOfMoney", item.price);
-        }
-      });
+      if (possibleAmount != payload.quantity) {
+        console.log(possibleAmount);
+        return possibleAmount;
+      }
+
+      return "sucess";
     },
   },
 });
+
+function getItemFromCart(cart, itemId) {
+  return cart.find((item) => item.id === itemId);
+}
+
+function getItemIdOnCart(cart, itemId) {
+  let index = "error";
+  cart.forEach((item, i) => {
+    if (item.id == itemId) {
+      index = i;
+    }
+  });
+  return index;
+}
+
+function hasItemOnCart(array, id) {
+  return array.find((item) => item.id === id);
+}

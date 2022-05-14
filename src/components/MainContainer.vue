@@ -10,7 +10,7 @@
     </section>
 
     <section class="main-container__money-bar">
-      {{ totalOfMoney.toLocaleString("en") }}
+      {{ "$" + totalOfMoney.toLocaleString("en") }}
     </section>
 
     <section class="main-container__market-list">
@@ -31,7 +31,7 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const sortedList = ref([]);
-const totalOfMoney = computed(() => store.getters["getTotalOfMoney"]);
+const totalOfMoney = computed(() => store.getters["getMoney"]);
 
 onMounted(() => {
   sortedList.value = itensList.sort((a, b) => {
