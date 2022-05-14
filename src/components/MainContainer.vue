@@ -9,9 +9,7 @@
       <h1 class="header__text">Spend Bill Gates' Money</h1>
     </section>
 
-    <section class="main-container__money-bar">
-      {{ "$" + totalOfMoney.toLocaleString("en") }}
-    </section>
+    <MoneyBar :totalOfMoney="totalOfMoney"></MoneyBar>
 
     <section class="main-container__market-list">
       <MarketItem
@@ -45,6 +43,7 @@ import { computed, onMounted, ref } from "vue";
 import ReceiptItem from "./ReceiptItem.vue";
 import MarketItem from "@/components/MarketItem.vue";
 import itensList from "@/assets/mocks/itens-to-sell.js";
+import MoneyBar from "./MoneyBar.vue";
 
 const store = useStore();
 const sortedList = ref([]);
@@ -91,22 +90,6 @@ onMounted(() => {
       text-align: center;
       line-height: 1.3em;
     }
-  }
-
-  .main-container__money-bar {
-    color: $primary-white;
-    background-color: $primary-green;
-    background: $gradient-green;
-
-    top: 0;
-    position: sticky;
-    z-index: 9999;
-    padding: 20px;
-    margin: 10px 0;
-
-    font-size: $font-4xl;
-    font-weight: 700;
-    text-align: center;
   }
 
   .main-container__market-list {
