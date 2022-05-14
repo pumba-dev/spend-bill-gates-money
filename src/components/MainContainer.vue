@@ -35,6 +35,21 @@
         }}</span>
       </div>
     </section>
+
+    <section class="main-container__footer">
+      <span class="footer_message">
+        Made with ♡ by
+        <a href="https://github.com/pumba-dev" target="_blank"
+          >Pumba Developer</a
+        >
+      </span>
+      <a
+        class="footer__website-url"
+        href="https://pumbadev.com/"
+        target="_blank"
+        >PumbaDev.com</a
+      >
+    </section>
   </main>
 </template>
 
@@ -61,6 +76,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import "@/sass/variables.scss";
+@import "@/sass/media-querys.scss";
 
 .main-container {
   max-width: 1000px;
@@ -110,8 +126,15 @@ onMounted(() => {
 
   .main-container__market-list {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-gap: 10px 10px;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+
+    @include media-query(sm) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @include media-query(md) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   .receipt {
@@ -144,6 +167,30 @@ onMounted(() => {
         color: $primary-green;
         text-align: right;
       }
+    }
+  }
+
+  .main-container__footer {
+    background: white;
+    margin-top: 15px;
+    padding: 30px 20px 45px;
+    color: $primary-black;
+    text-align: center;
+    text-decoration: none;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .footer_message {
+      font-size: $font-lg;
+    }
+
+    .footer__website-url {
+      margin-top: 20px;
+      text-decoration: none;
+      font-size: $font-xl;
+      font-weight: 700;
     }
   }
 }
