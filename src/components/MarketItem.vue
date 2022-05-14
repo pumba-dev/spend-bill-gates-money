@@ -73,10 +73,7 @@ function changeItemAmount() {
       quantity: itemAmount.value,
     })
     .then((response) => {
-      if (response != "sucess") {
-        console.log("newAmount::: " + response);
-        itemAmount.value = response;
-      }
+      itemAmount.value = response;
     });
 }
 </script>

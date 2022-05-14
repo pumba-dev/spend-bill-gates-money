@@ -48,25 +48,32 @@ export default createStore({
   },
   actions: {
     addOneItem({ commit, getters }, payload) {
-      if (!hasItemOnCart(getters.getCart, payload.id)) {
-        commit("pushItemToCart", {
-          ...payload,
-          amount: 1,
-        });
-      } else {
-        const ItemIdOnCart = getItemIdOnCart(getters.getCart, payload.id);
+      const ItemIdOnCart = getItemIdOnCart(getters.getCart, payload.id);
+
+      if (hasItemOnCart(getters.getCart, payload.id)) {
         commit("increaseItemQuantity", {
           id: ItemIdOnCart,
           quantity: 1,
+        });
+      } else {
+        commit("pushItemToCart", {
+          ...payload,
+          amount: 1,
         });
       }
     },
     removeOneItem({ commit, getters }, payload) {
       const ItemIdOnCart = getItemIdOnCart(getters.getCart, payload.id);
-      commit("decrementItemQuantity", {
-        id: ItemIdOnCart,
-        quantity: 1,
-      });
+      const ItemOnCart = getItemFromCart(getters.getCart, payload.id);
+
+      if (ItemOnCart.amount == 1) {
+        commit("removeItemFromCart", ItemIdOnCart);
+      } else {
+        commit("decrementItemQuantity", {
+          id: ItemIdOnCart,
+          quantity: 1,
+        });
+      }
     },
     changeAmountOfItem({ commit, getters }, payload) {
       const currentMoney = getters.getMoney;
@@ -76,6 +83,8 @@ export default createStore({
       const canPay = currentMoney >= payload.item.price * payload.quantity;
       let possibleAmount = 0;
 
+      // Checking how many items can be purchased
+      // If the amount is not possible, it will be set to the maximum possible
       if (canPay) {
         possibleAmount = payload.quantity;
       } else {
@@ -87,29 +96,23 @@ export default createStore({
         } else {
           possibleAmount = Math.floor(currentMoney / payload.item.price);
         }
-        if (possibleAmount === 0) {
-          return possibleAmount;
+      }
+
+      if (possibleAmount > 0) {
+        if (hasItem) {
+          commit("changeItemAmount", {
+            id: ItemIdOnCart,
+            quantity: possibleAmount,
+          });
+        } else {
+          commit("pushItemToCart", {
+            ...payload.item,
+            amount: possibleAmount,
+          });
         }
       }
 
-      if (hasItem) {
-        commit("changeItemAmount", {
-          id: ItemIdOnCart,
-          quantity: possibleAmount,
-        });
-      } else {
-        commit("pushItemToCart", {
-          ...payload.item,
-          amount: possibleAmount,
-        });
-      }
-
-      if (possibleAmount != payload.quantity) {
-        console.log(possibleAmount);
-        return possibleAmount;
-      }
-
-      return "sucess";
+      return possibleAmount;
     },
   },
 });
