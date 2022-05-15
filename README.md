@@ -33,8 +33,6 @@ O projeto está em constante desenvolvimento, então as próximas atualizações
 
 ## 📝 Pré-requisitos
 
-Requisitos definidos pela empresa:
-
 - Desenvolva o site abaixo em VUE, com atenção na reatividade dos elementos da página.
   - https://neal.fun/spend/
 - Utilizar Vuex;
