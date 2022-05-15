@@ -28,6 +28,7 @@ const sortedList = ref([]);
 const currentCart = computed(() => store.getters["getCart"]);
 const totalCostCart = computed(() => store.getters["getTotalCostCart"]);
 const totalOfMoney = computed(() => store.getters["getMoney"]);
+const currentMoneyAnimation = ref(null);
 let animatedMoney = ref(0);
 
 onMounted(() => {
@@ -39,29 +40,33 @@ onMounted(() => {
 });
 
 watch(totalOfMoney, (newValue, oldValue) => {
-  const speed = 200;
+  const speed = 100;
 
   const increaseMoney = () => {
-    const inc = (newValue - oldValue) / speed;
+    const currentMoney = animatedMoney.value;
+    const inc = Math.ceil((newValue - oldValue) / speed);
 
-    if (animatedMoney.value < newValue) {
-      animatedMoney.value = Math.ceil(animatedMoney.value + inc);
-      setTimeout(increaseMoney, 1);
+    if (currentMoney < newValue) {
+      animatedMoney.value = Math.ceil(currentMoney + inc);
+      currentMoneyAnimation.value = setTimeout(increaseMoney, 1);
     } else {
       animatedMoney.value = newValue;
     }
   };
 
   const decreaseMoney = () => {
-    const inc = (oldValue - newValue) / speed;
+    const currentMoney = animatedMoney.value;
+    const inc = Math.ceil((oldValue - newValue) / speed);
 
-    if (animatedMoney.value > newValue) {
-      animatedMoney.value = Math.ceil(animatedMoney.value - inc);
-      setTimeout(decreaseMoney, 1);
+    if (currentMoney > newValue) {
+      animatedMoney.value = Math.ceil(currentMoney - inc);
+      currentMoneyAnimation.value = setTimeout(decreaseMoney, 1);
     } else {
       animatedMoney.value = newValue;
     }
   };
+
+  clearTimeout(currentMoneyAnimation.value);
 
   if (newValue > oldValue) {
     increaseMoney();
