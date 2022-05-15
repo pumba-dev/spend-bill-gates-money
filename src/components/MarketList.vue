@@ -14,7 +14,7 @@ import MarketItem from "./MarketItem.vue";
 
 defineProps({
   itemList: {
-    type: Number,
+    type: Array,
     required: true,
   },
 });
