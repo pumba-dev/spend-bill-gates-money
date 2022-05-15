@@ -42,11 +42,10 @@ watch(totalOfMoney, (newValue, oldValue) => {
   const speed = 200;
 
   const increaseMoney = () => {
-    const count = animatedMoney.value;
     const inc = (newValue - oldValue) / speed;
 
-    if (count < newValue) {
-      animatedMoney.value = Math.ceil(count + inc);
+    if (animatedMoney.value < newValue) {
+      animatedMoney.value = Math.ceil(animatedMoney.value + inc);
       setTimeout(increaseMoney, 1);
     } else {
       animatedMoney.value = newValue;
@@ -54,11 +53,10 @@ watch(totalOfMoney, (newValue, oldValue) => {
   };
 
   const decreaseMoney = () => {
-    const count = animatedMoney.value;
     const inc = (oldValue - newValue) / speed;
 
-    if (count > newValue) {
-      animatedMoney.value = Math.ceil(count - inc);
+    if (animatedMoney.value > newValue) {
+      animatedMoney.value = Math.ceil(animatedMoney.value - inc);
       setTimeout(decreaseMoney, 1);
     } else {
       animatedMoney.value = newValue;
