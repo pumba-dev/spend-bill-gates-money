@@ -2,7 +2,7 @@
   <main class="main-container">
     <MainContainerHeader></MainContainerHeader>
 
-    <MoneyBar :totalOfMoney="totalOfMoney"></MoneyBar>
+    <MoneyBar :totalOfMoney="animatedMoney"></MoneyBar>
 
     <MarketList :itemList="sortedList"></MarketList>
 
@@ -15,7 +15,7 @@
 
 <script setup>
 import { useStore } from "vuex";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 
 import itensList from "@/assets/mocks/itens-to-sell.js";
 import MoneyBar from "./MoneyBar.vue";
@@ -25,14 +25,51 @@ import MainContainerHeader from "./MainContainerHeader.vue";
 
 const store = useStore();
 const sortedList = ref([]);
-const totalOfMoney = computed(() => store.getters["getMoney"]);
 const currentCart = computed(() => store.getters["getCart"]);
 const totalCostCart = computed(() => store.getters["getTotalCostCart"]);
+const totalOfMoney = computed(() => store.getters["getMoney"]);
+let animatedMoney = ref(0);
 
 onMounted(() => {
   sortedList.value = itensList.sort((a, b) => {
     return a.price - b.price;
   });
+
+  animatedMoney.value = totalOfMoney.value;
+});
+
+watch(totalOfMoney, (newValue, oldValue) => {
+  const speed = 200;
+
+  const increaseMoney = () => {
+    const count = animatedMoney.value;
+    const inc = (newValue - oldValue) / speed;
+
+    if (count < newValue) {
+      animatedMoney.value = Math.ceil(count + inc);
+      setTimeout(increaseMoney, 1);
+    } else {
+      animatedMoney.value = newValue;
+    }
+  };
+
+  const decreaseMoney = () => {
+    const count = animatedMoney.value;
+    const inc = (oldValue - newValue) / speed;
+
+    if (count > newValue) {
+      animatedMoney.value = Math.ceil(count - inc);
+      setTimeout(decreaseMoney, 1);
+    } else {
+      animatedMoney.value = newValue;
+    }
+  };
+
+  if (newValue > oldValue) {
+    increaseMoney();
+  } else {
+    decreaseMoney();
+  }
 });
 </script>
 
