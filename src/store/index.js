@@ -98,18 +98,18 @@ export default createStore({
         }
       }
 
-      if (possibleAmount > 0) {
-        if (hasItem) {
-          commit("changeItemAmount", {
-            id: ItemIdOnCart,
-            quantity: possibleAmount,
-          });
-        } else {
-          commit("pushItemToCart", {
-            ...payload.item,
-            amount: possibleAmount,
-          });
-        }
+      if (possibleAmount == 0) {
+        commit("removeItemFromCart", ItemIdOnCart);
+      } else if (hasItem) {
+        commit("changeItemAmount", {
+          id: ItemIdOnCart,
+          quantity: possibleAmount,
+        });
+      } else {
+        commit("pushItemToCart", {
+          ...payload.item,
+          amount: possibleAmount,
+        });
       }
 
       return possibleAmount;
