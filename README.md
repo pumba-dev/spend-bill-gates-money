@@ -6,7 +6,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/pumba-dev/perfect-pay?style=for-the-badge)
 ![Bitbucket open pull requests](https://img.shields.io/github/issues-pr/pumba-dev/perfect-pay?style=for-the-badge)
 
-<h2 align="center">☕ Projeto Concluído</h2>
+<h2 align="center">☕ Projeto Concluído e Aprovado</h2>
 
 <img src="./public/home-page.png" alt="Imagem da Home do Site."/>
 
